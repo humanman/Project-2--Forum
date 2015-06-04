@@ -5,3 +5,6 @@ gem "sinatra"
 gem "sinatra-contrib"
 gem "pg"
 gem "pry"
+gem "redcarpet"
+gem "sendgrid-ruby"
+gem 'rest-client'

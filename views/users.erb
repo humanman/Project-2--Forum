@@ -1,0 +1,17 @@
+<h1>Users</h1>
+<ul>
+	<% @users.each do |user| %>
+		<li><%= user['name'] %> <%= user['email'] %></li>
+	<% end %>
+</ul>
+
+<h2>New User</h2>
+<form action="/users" method="POST">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name"/>
+  <label for="email">Email</label>
+  <input type="text" id="email" name="email"/>
+  <label for="password">Password</label>
+  <input type="text" id="password" name="password"/>
+  <input type="submit" value="Create">
+</form>

@@ -1,15 +1,15 @@
 -- DROP DATABASE IF EXISTS jake_forum;
 CREATE DATABASE jake_forum;
 \c jake_forum
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS posts CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   -- usernames need to be unique
-  name VARCHAR NOT NULL,
-  email VARCHAR NOT NULL,
+  name VARCHAR NOT NULL UNIQUE,
+  email VARCHAR NOT NULL UNIQUE,
   -- decipher account age
   created_at TIMESTAMP NOT NULL,
   -- http://ipinfo.io/ via JSON UPDATE loc at POST route

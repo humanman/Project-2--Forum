@@ -13,5 +13,23 @@
 
 <body>
 	<h1>Welcome to Jake's Forum</h1>
+	<% if current_user %>
+		You are Logged In
+		<form action="/users/login" method="POST">
+			<input type="hidden" name="_method" value="DELETE">
+			<input type="submit" value="Log Out">
+		</form>
+	<% else %>
+		You are NOT logged In
+	<% end %>
+
+	
+	
+	<%= yield %>
+
+
+
+
+	
 </body>
 </html>
