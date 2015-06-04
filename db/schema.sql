@@ -1,6 +1,9 @@
-DROP DATABASE IF EXISTS jake_forum;
+-- DROP DATABASE IF EXISTS jake_forum;
 CREATE DATABASE jake_forum;
 \c jake_forum
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS comments;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -38,7 +41,6 @@ CREATE TABLE comments (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id),
   post_id INTEGER NOT NULL REFERENCES posts(id),
-  name VARCHAR NOT NULL,
   message TEXT,
   created_at TIMESTAMP NOT NULL,
   -- http://ipinfo.io/ via JSON UPDATE loc at POST route
