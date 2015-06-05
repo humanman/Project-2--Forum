@@ -1,4 +1,5 @@
 <h1>User</h1>
+<div><%=  @user_profile["loc"] %></div>
 
 <dl>
 	<dt>Name:</dt>
@@ -6,9 +7,18 @@
 	<dt>Email:</dt>
 	<dd><%=  @user_profile["email"] %></dd>
 </dl>
+ 
+<h1>Your Post History</h1>
+<% if @user_posts != [] %>
+	<% @user_posts.each do |post|%> 
+	<div><%=  markdown.render(post["content"]) %></div>
+	<% end %>
+<% else %>
+	<h3>You Have No Posts Yet</h3>
+<% end %>
 
-<form action="/tweets" method="POST">
+<form action="/new_post" method="POST">
 	<input type="hidden" name="user_id" value="<%= current_user %>">
-	<textarea name="message"></textarea>
+	<textarea name="content"></textarea>
 	<input type="submit" value="POST SOMETHING!">
 </form>

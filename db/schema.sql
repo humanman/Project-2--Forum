@@ -24,7 +24,6 @@ CREATE TABLE posts (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id),
   title VARCHAR NOT NULL,
-  created_at TIMESTAMP NOT NULL,
   -- http://ipinfo.io/ via JSON UPDATE loc at POST route
   loc VARCHAR,
   -- embedded video, text, images, gifs
@@ -33,7 +32,9 @@ CREATE TABLE posts (
   upvotes INTEGER,
   downvotes INTEGER,
   -- each new comment UPDATEs comment_num
-  comment_num INTEGER
+  comment_num INTEGER,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL
 );
 
 
@@ -42,11 +43,12 @@ CREATE TABLE comments (
   user_id INTEGER NOT NULL REFERENCES users(id),
   post_id INTEGER NOT NULL REFERENCES posts(id),
   message TEXT,
-  created_at TIMESTAMP NOT NULL,
   -- http://ipinfo.io/ via JSON UPDATE loc at POST route
   loc VARCHAR,
   upvotes INTEGER,
-  downvotes INTEGER
+  downvotes INTEGER,
+  updated_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL
 );
 
 
