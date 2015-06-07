@@ -9,10 +9,12 @@
 
 	<script type="text/javascript" src="/scripts/jquery-2.1.4.js"></script>
 	<script type="text/javascript" src="/scripts/main.js"></script>
+
 </head>
 
 <body style="margin: 30px;">
-<head><a href="/">Front Page</a></head>
+	<div id="random_jake"></div>
+<header><a href="/">Front Page</a>&nbsp;&nbsp;<a href="/users/<%= current_user %>">My Page</a></header>
 	<h1>Welcome to Jake's Forum</h1>
 	<% if current_user %>
 		<h4>You are Logged In</h4>

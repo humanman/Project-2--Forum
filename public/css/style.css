@@ -96,6 +96,28 @@ h1.post_title {
 	display: inline;
 }
 
+.thumbnail {
+	height: 20px;
+	width:  20px;
+}
+
+#random_jake {
+	position: relative;
+	padding: 30px;
+
+}
+
+#random_jake img {
+ position: absolute;
+ top: 0px;
+ right: 75px;
+ height: 200px;
+ width: 200px;
+}
+
+textarea {
+	color: black;
+}
 
 
 

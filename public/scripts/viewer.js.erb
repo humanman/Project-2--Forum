@@ -1,0 +1,11 @@
+
+function displayImg() {
+	var allImgHref = $('.content').find('a').attr('href');
+	var allImg = $('.content').find('a')[0].innerHTML;
+	 
+	allImg = "img src=\"" + allImgHref + "\">";
+}
+	
+
+window.onload = displayImg;
+	

@@ -40,17 +40,17 @@ module App
       data = JSON.parse(response)
       @city = data["city"]
       	if @city == nil
-      		@city = "DEFAULT"
+      		@city = "Earth"
       	end
       @city
     end
-
-    # ----------------USERS----------------
 
      get('/') do
      	@all_posts = $db.exec_params("SELECT * FROM posts JOIN users on posts.user_id = users.id ORDER BY upvotes DESC")
       erb :homepage
      end
+    # ----------------USERS----------------
+
 
     # get('/login') do
     #   erb :login
@@ -58,7 +58,7 @@ module App
 
     post('/users/login') do
 
-    	@all_posts = $db.exec("SELECT * FROM posts ORDER BY created_at DESC;")
+    	@all_posts = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
       email = params[:email]
       password = params[:password]
 
@@ -107,11 +107,11 @@ module App
 	  	@new_user = Forum::User.new(hash)
 	    @is_user = $db.exec_params("SELECT * FROM users WHERE name = $1 AND email = $2",[@new_user.name, @new_user.email])
 	    	if  @is_user.ntuples == 0
-			    id = $db.exec_params("INSERT INTO users (name, email, loc, rating, password, post_num, created_at)
+			    result = $db.exec_params("INSERT INTO users (name, email, loc, rating, password, post_num, created_at)
 			      VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP) RETURNING id", [@new_user.name, @new_user.email, @new_user.loc, @new_user.rating, @new_user.password, @new_user.post_num])
-			    @id =id.first["id"] 
+			    @id = result.first["id"] 
 			    session[:user_id] = @id  
-			    binding.pry
+			    # binding.pry
 			    redirect "/users/#{@id}"
 			  else
 			  	@message = "That username/email is already in use"
@@ -152,6 +152,7 @@ module App
       # This should CREATE a new post
 
 			hash = {
+				:user_id    => current_user.to_i,
 				:title 			=> params[:title],
 				:cat 				=> params[:cat],
 				:content		=> params[:content],
@@ -159,8 +160,11 @@ module App
 				:downvotes 	=> 0,
 				:loc 				=> geo_tagger(request.ip)
 			}
+
 			@new_post  = Forum::Post.new(hash)
-      result = $db.exec_params("INSERT INTO posts (user_id, title, cat, content, upvotes, downvotes, created_at, updated_at) VALUES (current_user(), $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id",[@new_post.title, @new_post.cat, @new_post.content, @new_post.upvotes, @new_post.downvotes])
+      # binding.pry
+			
+      result = $db.exec_params("INSERT INTO posts (user_id, title, cat, content, upvotes, downvotes, loc, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id",[@new_post.user_id, @new_post.title, @new_post.cat, @new_post.content, @new_post.upvotes, @new_post.downvotes, @new_post.loc])
       # submit buttong takes user to page of new post
       redirect "/posts/#{result.first["id"]}"
     else
@@ -175,8 +179,10 @@ module App
 		@id = (params[:id])
 		# when user clicks on post title from feed, they should be taken to a page for that post with comments below.
 		@current_post = $db.exec("SELECT * FROM posts JOIN users on posts.user_id = users.id WHERE posts.id = #{@id}").first
-		@comments_feed = $db.exec_params("SELECT * FROM comments WHERE post_id = $1 ORDER BY upvotes DESC;" ,[@id]).entries
+		@comments_feed = $db.exec_params("SELECT * FROM comments RIGHT JOIN posts on comments.post_id = posts.id WHERE comments.post_id = $1 ORDER BY comments.upvotes DESC;" ,[@id]).entries
+		@reply_feed = $db.exec_params("SELECT * FROM comments LEFT JOIN replies on comments.id = replies.comment_id WHERE comments.post_id = $1 ORDER BY replies.created_at DESC;" ,[@id]).entries
 		erb :post
+		# binding.pry
 	end	
 
 	patch'/upvote_post' do
@@ -202,6 +208,8 @@ module App
     if logged_in?
       # This should CREATE a new post
 			hash = {
+				:user_id 		=> current_user.to_i,
+				:post_id    => params[:post_id].to_i,
 				:message 		=> params[:message],
 				:loc				=> geo_tagger(request.ip),
 				:upvotes  	=> 0,
@@ -209,9 +217,9 @@ module App
 			}
 			@new_comment  = Forum::Comment.new(hash)
 			# binding.pry
-      result = $db.exec_params("INSERT INTO comments (user_id, post_id, message, loc, upvotes, downvotes, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id, message, post_id", [current_user(), params[:post_id], @new_comment.message, @new_comment.loc, @new_comment.upvotes, @new_comment.downvotes])
+      result = $db.exec_params("INSERT INTO comments (user_id, post_id, message, loc, upvotes, downvotes, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id", [@new_comment.user_id, @new_comment.post_id, @new_comment.message, @new_comment.loc, @new_comment.upvotes, @new_comment.downvotes])
      	# binding.pry
-      redirect "/posts/#{result.first['post_id']}"
+      redirect "/posts/#{params[:post_id]}"
       else
         status 403
         "PERMISSION DENIED"
@@ -222,14 +230,16 @@ module App
 	    if logged_in?
 	      # This should CREATE a new post
 				hash = {
-					:post_id		=> params[:post_id],
-					:comment_id	=> params[:comment_id],
+					:user_id    => current_user.to_i,
+					:post_id		=> params[:post_id].to_i,
+					:comment_id	=> params[:comment_id].to_i,
 					:message 		=> params[:message],
-					:loc				=> geo_tagger(request.ip),
+					:loc				=> geo_tagger(request.ip)
 				}
+
 				@new_reply = Forum::Reply.new(hash)
 				# binding.pry
-	      result = $db.exec_params("INSERT INTO replies (user_id, post_id, comment_id, message, loc, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id, message, post_id", [current_user(), @new_reply.post_id, @new_reply.comment_id, @new_reply.message, @new_reply.loc])
+	      result = $db.exec_params("INSERT INTO replies (user_id, post_id, comment_id, message, loc, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id, message, post_id", [@new_reply.user_id, @new_reply.post_id, @new_reply.comment_id, @new_reply.message, @new_reply.loc])
 	     	# binding.pry
 	      redirect "/posts/#{result.first['post_id']}"
       else

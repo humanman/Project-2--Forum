@@ -55,7 +55,7 @@ CREATE TABLE replies (
   post_id INTEGER NOT NULL REFERENCES posts(id),
   comment_id INTEGER NOT NULL REFERENCES comments(id),
   message TEXT,
-  loc VARCHAR DEFAULT 'Earth',
+  loc VARCHAR,
   -- upvotes INTEGER,
   -- downvotes INTEGER,
   updated_at TIMESTAMP NOT NULL,
