@@ -7,11 +7,13 @@
 	<dt>Email:</dt>
 	<dd><%=  @user_profile["email"] %></dd>
 </dl>
+
+<a href="/">Front Page</a>
  
 <h1>Your Post History</h1>
 <% if @user_posts != [] %>
 	<% @user_posts.each do |post|%> 
-	<div><%=  markdown.render(post["content"]) %></div>
+	  <div><a href="/posts/<%= post["id"] %>" class="post_title"><%=  @markdown.render(post["title"]) %></a></div>
 	<% end %>
 <% else %>
 	<h3>You Have No Posts Yet</h3>
@@ -19,6 +21,13 @@
 
 <form action="/new_post" method="POST">
 	<input type="hidden" name="user_id" value="<%= current_user %>">
-	<textarea name="content"></textarea>
-	<input type="submit" value="POST SOMETHING!">
+	<input type="text" name="title" placeholder="title">
+	<select name="cat">
+		<option value="video">video</option>
+		<option value="text">text</option>
+		<option value="image">image</option>
+		<option value="gif">gif</option>
+	</select><br>
+	<textarea name="content" placeholder="content goes here"></textarea><br>
+	<input type="submit" value="POST TOPIC!">
 </form>

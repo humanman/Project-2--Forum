@@ -1,3 +1,10 @@
+<div>
+	<% @all_posts.each do |post| %>
+	<div><a href="/posts/<%= post["id"] %>"> <%= post['title'] %></a></div>
+	<% end %>
+</div>
+
+<% if !logged_in? %>
 <div style="float: right;">
 	<h1>LOG IN!</h1>
 	<form action="/users/login" method="POST">
@@ -9,14 +16,13 @@
 	<form action="/users" method="POST">
 		<input type="text" name="name" placeholder="name"><br>
 		<input type="text" name="email" placeholder="email"><br>
-		<input type="password" name="password" placeholder="password" required>
+		<input type="password" name="password" placeholder="password" required><br>
 		<input type="password" name="password2" placeholder="reenter password">
 		<h3><%= @message %></h3>
 		<input type="submit" value="Create Account!">
 	</form>
-</div>
-
-
-<h3><%= @message %></h3>
-
-
+	<% else %>
+	<h3><%= @message %></h3>
+	</div>
+	<% end %>
+<!-- feed of posts -->

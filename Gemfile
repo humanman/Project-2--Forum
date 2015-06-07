@@ -7,4 +7,5 @@ gem "pg"
 gem "pry"
 gem "redcarpet"
 gem "sendgrid-ruby"
-gem 'rest-client'
+gem "rest-client"
+gem "gon"

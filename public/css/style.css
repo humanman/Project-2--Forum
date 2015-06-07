@@ -1,0 +1,105 @@
+body {
+	background-color: #3AAFDB;
+	color : white;
+	font-weight: bold;
+}
+
+.clear {
+	clear: both;
+}
+
+div.comment > p {
+	border: solid red 2px;
+	background-color: pink;
+	opacity: .8;
+	padding: 15px;
+	color: #767676;
+	font-weight: normal;
+}
+
+.comment_box {
+	padding: 80px;
+}
+.comment > input, form {
+	position: relative;
+	top: -15px;
+}
+
+.content,.comment {
+	margin-left: 10%;
+}
+
+.content {
+	background-color: #1B9186;
+}
+
+.sub {
+	color: #FF69B4;
+	font-size: 1.3em;
+	position: absolute;
+	right: -50px;
+	width: 100px;
+	height: 100px;
+	margin-top: 30px;
+	background-color: #ffffab;
+	border: none;
+	border-radius: 75px;
+	-webkit-transition: -webkit-transform .8s ease-in-out;
+	transition: transform .8s ease-in-out;
+}
+
+.sub:hover {
+  cursor: ne-resize;
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+} 
+
+.class {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.change {
+  visibility: visible;
+  opacity: 1;
+} 
+
+.vote {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	position: relative;
+	top: 25px;
+	float: left;
+}
+
+button {
+	display: inline-block;
+	z-index: 10;
+	background-color: #3AAFDB;
+}
+
+.post_vote {
+	height: 35px;
+	width: 35px;
+}
+
+.comment_vote {
+	height: 15px;
+	width: 15px;
+}
+
+.comment_count {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	display: inline;
+}
+
+h1.post_title {
+	display: inline;
+}
+
+
+
+
+
+/* ul[class=tree] and every ul under it loses all alignment, and bullet
+ * style.
+ */

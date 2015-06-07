@@ -11,16 +11,17 @@
 	<script type="text/javascript" src="/scripts/main.js"></script>
 </head>
 
-<body>
+<body style="margin: 30px;">
+<head><a href="/">Front Page</a></head>
 	<h1>Welcome to Jake's Forum</h1>
 	<% if current_user %>
-		You are Logged In
-		<form action="/users/login" method="POST">
+		<h4>You are Logged In</h4>
+		<form action="/logout" method="POST">
 			<input type="hidden" name="_method" value="DELETE">
 			<input type="submit" value="Log Out">
 		</form>
 	<% else %>
-		You are NOT logged In
+		<h4>You are NOT logged In</h4>
 	<% end %>
 
 
