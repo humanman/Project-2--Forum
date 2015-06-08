@@ -64,17 +64,17 @@
 		</div>
 
 		<div class="comment">
-			<article class="thumbnail">
-  		</article>
+	<!-- 		<article class="thumbnail">
+  		</article> -->
 			</script>
 			<h5><%= @who_commented.first['name']%></h5>
-			<p>
+			
 				<%= @markdown.render(comment['message']) %>
-			</p>
+		
 			<%#= reply_sorter(comment['id']) %>
-		<p class="reply"> 
+	<!-- 	<p class="reply"> 
 
-			</p> 
+			</p>  -->
 		</div>
 			<%# end %>
 		<!-- 	<div class="reply_box, class">
