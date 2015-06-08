@@ -69,7 +69,7 @@ module App
 
     post('/users/login') do
 
-    	@all_posts = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
+    	@front_page = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
 
       email = params[:email]
       password = params[:password]

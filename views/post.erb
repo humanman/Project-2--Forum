@@ -3,7 +3,8 @@
 	<h1 class="post_title" style="display: inline;"><%= @markdown.render(@current_post['title']) %></h1> 
 	<p class="comment_count" style="display: inline;"><%= @comments_feed.size + 0 %></p>
 </div>
- <p><%= @current_post['name'] %>
+ <p><%= @current_post['name'] %></p>
+ <p><%= @current_post['loc'] %></p>
 <br>
 <div class="vote">
 	<form action="/upvote_post" method="POST">
@@ -68,6 +69,8 @@
   		</article> -->
 			</script>
 			<h5><%= @who_commented.first['name']%></h5>
+			<h5><%= @who_commented.first['loc']%></h5>
+			<h5><%= @who_commented.first['created_at']%></h5>
 			
 				<%= @markdown.render(comment['message']) %>
 		
