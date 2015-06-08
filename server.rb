@@ -190,8 +190,8 @@ module App
 		@id = (params[:id])
 		# when user clicks on post title from feed, they should be taken to a page for that post with comments below.
 		@current_post = $db.exec("SELECT * FROM posts JOIN users on posts.user_id = users.id WHERE posts.id = #{@id}").first
-		@who_commented = $db.exec_params("SELECT name from users JOIN comments on comments.user_id = users.id").entries
-		@comments_feed = $db.exec_params("SELECT * FROM comments WHERE comments.post_id = $1 ORDER BY comments.upvotes DESC;" ,[@id]).entries
+		# @who_commented = $db.exec_params("SELECT name from users JOIN comments ON comments.user_id = users.id").entries
+		@comments_feed = $db.exec_params("SELECT * FROM comments LEFT JOIN users ON comments.user_id = users.id WHERE comments.post_id = $1 ORDER BY comments.upvotes DESC;" ,[@id]).entries
 		erb :post
 		# binding.pry
 	end	
