@@ -57,23 +57,30 @@ var jakeImgArr = new Array();
 
 function random_imglink(){
 	var rand = Math.floor(Math.random() * pics.length)
-
 	document.getElementById('random_jake').innerHTML = '<img src="'+ pics[rand] + '">';
 }
 
-  $(function() {
-    $("button.vote").click(function() {
-      // ...other stuff you want to do when links is clicked
+function random_thumbnail(){
+	var rand = Math.floor(Math.random() * pics.length);
+	var image = document.getElementsByClassName('thumbnail');
+	image.innerHTML = '<img src="'+ pics[rand] + '">';
+}
 
-      // This is the same as putting onclick="return false;" in HTML
-     return false;
-    })
- });
+
+// $(function() {
+//   $("upvote_vote").click(function() {
+//   ame as putting onclick="return false;" in HTML
+//    return false;
+//   })
+// });
+
 
 // initialize()
-window.onload = random_imglink;
+// window.onload = random_imglink;
 // turn img links to display
 $(window).load(function(){
+	random_imglink();
+	random_thumbnail();
 	var allImgHref = $('.content').find('a').attr('href');
 	var allImg = $('.content').find('a')[0]
 	allImg.innerHTML = allImg.innerHTML + "<img src=\"" + allImgHref + "\">";

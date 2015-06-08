@@ -1,6 +1,7 @@
 <div>
-	<% @all_posts.each do |post| %>
-	<div><a href="/posts/<%= post["id"] %>"> <%= post['title'] %></a></div>
+	<% @front_page.each do |post| %>
+	<div><a href="/posts/<%= post["id"] %>"> <%= @markdown.render(post['title']) %></a></div>
+	<%# binding.pry %>
 	<% end %>
 </div>
 

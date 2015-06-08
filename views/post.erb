@@ -1,7 +1,7 @@
-<div>
+<div class="post_title">
 	<input type="hidden" name="post_id" value="<%= params[:id] %>">	
-	<h1 class="post_title"><%= @current_post['title'] %></h1> 
-	<p class="comment_count"><%= @comments_feed.size + 0 %></p>
+	<h1 class="post_title" style="display: inline;"><%= @markdown.render(@current_post['title']) %></h1> 
+	<p class="comment_count" style="display: inline;"><%= @comments_feed.size + 0 %></p>
 </div>
  <p><%= @current_post['name'] %>
 <br>
@@ -39,43 +39,54 @@
 				<%# binding.pry %>				
 
 
-	<% @comments_feed.each do |comment| %>
-		<div style="border: solid black 1px; background-color: #ADD8E7">
-			<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
-			<div class="vote">
-				<form action="/upvote_comment" method="POST">
-					<p style="color: pink;display: inline-block; width: 1em;"><%= comment['upvotes'] %></p>
-					<input type="hidden" name="post_id" value="<%= params[:id] %>">	
-					<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
-					<input type="hidden" name="_method" value="patch">
-					<button type="input" class="upvote">
-						<img class="comment_vote" src="/images/thumbsup.png">
-					</button>
-				</form>
-				<form action="/downvote_comment" method="POST">
-					<p style="color: #BF3600;display: inline-block; width: 1em;"><%= comment['downvotes'] %></p>
-					<input type="hidden" name="post_id" value="<%= params[:id] %>">	
-					<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
-					<input type="hidden" name="_method" value="patch">
-					<button type="input" class="downpvote">
-						<img class="comment_vote" src="/images/thumbs down.png">
-					</button>
-				</form>
-			</div>
+<% @comments_feed.select do |comment| %>
+	<div style="border: solid black 1px; background-color: #ADD8E7">
+		<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
+		<div class="vote">
+			<form action="/upvote_comment" method="POST">
+				<p style="color: pink;display: inline-block; width: 1em;"><%= comment['upvotes'] %></p>
+				<input type="hidden" name="post_id" value="<%= params[:id] %>">	
+				<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
+				<input type="hidden" name="_method" value="patch">
+				<button type="input" class="upvote">
+					<img class="comment_vote" src="/images/thumbsup.png">
+				</button>
+			</form>
+			<form action="/downvote_comment" method="POST">
+				<p style="color: #BF3600;display: inline-block; width: 1em;"><%= comment['downvotes'] %></p>
+				<input type="hidden" name="post_id" value="<%= params[:id] %>">	
+				<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
+				<input type="hidden" name="_method" value="patch">
+				<button type="input" class="downpvote">
+					<img class="comment_vote" src="/images/thumbs down.png">
+				</button>
+			</form> 
+		</div>
 
-			<div class="comment">
-				<p><%= @markdown.render(comment['message']) %>
-				</p>
-				<div class="reply_box, class">
-					<form action="/reply" method="POST">	
-					<input type="hidden" name="post_id" value="<%= comment['post_id'] %>">	
-					<textarea style="color: black;" name="message" placeholder="reply goes here"></textarea><br>
-					<input type="submit" value="submit">
-					</form>
-				</div>
+		<div class="comment">
+			<article class="thumbnail">
+  		</article>
+			</script>
+			<h5><%= @who_commented.first['name']%></h5>
+			<p>
+				<%= @markdown.render(comment['message']) %>
+			</p>
+			<%#= reply_sorter(comment['id']) %>
+		<p class="reply"> 
+
+			</p> 
+		</div>
+			<%# end %>
+		<!-- 	<div class="reply_box, class">
+				<form action="/reply" method="POST">
+				<input type="hidden" name="comment_id" value="<%= comment['id'] %>">	
+				<input type="hidden" name="post_id" value="<%= params[:id] %>">	
+				<textarea style="color: black;" name="message" placeholder="reply goes here"></textarea><br>
+				<input type="submit" value="submit">
+				</form>
 			</div>
-			<div class="replies">
-			</div>
+		</div> -->
+		<!-- <div class="replies"> -->
 		</div>
 
 <% end %>

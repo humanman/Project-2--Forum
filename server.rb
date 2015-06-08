@@ -45,10 +45,21 @@ module App
       @city
     end
 
+    def reply_sorter(id)
+    	@all_replies = $db.exec_params("SELECT * FROM replies WHERE comment_id = $1 ORDER BY replies.created_at DESC;",[id]).entries
+			@all_replies.each do |response|
+				return response['message']
+			end
+			# binding.pry    
+    end
+
      get('/') do
-     	@all_posts = $db.exec_params("SELECT * FROM posts JOIN users on posts.user_id = users.id ORDER BY upvotes DESC")
+     	@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+     	@front_page = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC")
       erb :homepage
      end
+
+
     # ----------------USERS----------------
 
 
@@ -59,6 +70,7 @@ module App
     post('/users/login') do
 
     	@all_posts = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
+
       email = params[:email]
       password = params[:password]
 
@@ -162,11 +174,10 @@ module App
 			}
 
 			@new_post  = Forum::Post.new(hash)
-      # binding.pry
 			
-      result = $db.exec_params("INSERT INTO posts (user_id, title, cat, content, upvotes, downvotes, loc, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id",[@new_post.user_id, @new_post.title, @new_post.cat, @new_post.content, @new_post.upvotes, @new_post.downvotes, @new_post.loc])
+      result = $db.exec_params("INSERT INTO posts (user_id, title, cat, content, upvotes, downvotes, loc, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id",[@new_post.user_id, @new_post.title, @new_post.cat, @new_post.content, @new_post.upvotes, @new_post.downvotes, @new_post.loc]).first
       # submit buttong takes user to page of new post
-      redirect "/posts/#{result.first["id"]}"
+      redirect "/posts/#{result["id"]}"
     else
 			# binding.pry
 	    status 403
@@ -179,8 +190,8 @@ module App
 		@id = (params[:id])
 		# when user clicks on post title from feed, they should be taken to a page for that post with comments below.
 		@current_post = $db.exec("SELECT * FROM posts JOIN users on posts.user_id = users.id WHERE posts.id = #{@id}").first
-		@comments_feed = $db.exec_params("SELECT * FROM comments RIGHT JOIN posts on comments.post_id = posts.id WHERE comments.post_id = $1 ORDER BY comments.upvotes DESC;" ,[@id]).entries
-		@reply_feed = $db.exec_params("SELECT * FROM comments LEFT JOIN replies on comments.id = replies.comment_id WHERE comments.post_id = $1 ORDER BY replies.created_at DESC;" ,[@id]).entries
+		@who_commented = $db.exec_params("SELECT name from users JOIN comments on comments.user_id = users.id").entries
+		@comments_feed = $db.exec_params("SELECT * FROM comments WHERE comments.post_id = $1 ORDER BY comments.upvotes DESC;" ,[@id]).entries
 		erb :post
 		# binding.pry
 	end	
@@ -246,7 +257,7 @@ module App
         status 403
         "PERMISSION DENIED"
 			end
-			redirect "/posts/#{@id}"
+			redirect "/posts/#{params[:post_id]}"
 		end
 
 		patch'/upvote_comment' do
