@@ -1,10 +1,10 @@
 
 
 # require_relative "db/connection"
-# require_relative "models/comment"
-# require_relative "models/post"
-# require_relative "models/user"
-# require_relative "models/reply"
+require_relative "models/comment"
+require_relative "models/post"
+require_relative "models/user"
+require_relative "models/reply"
 
 
 module App
@@ -12,15 +12,15 @@ module App
 	class Server < Sinatra::Base
 		include Forum
 		enable :sessions
-		 configure :production do
-    	require 'uri'
-	    uri = URI.parse ENV["DATABASE_URL"]
-	    $db = PG.connect 
-  	  dbname: uri.path[1..-1],
-      host: uri.host,
-      port: uri.port,
-      user: uri.user,
-      password: uri.password
+
+		configure :production do
+      require 'uri'
+      uri = URI.parse ENV["DATABASE_URL"]
+      $db = PG.connect dbname: uri.path[1..-1],
+         host: uri.host,
+         port: uri.port,
+         user: uri.user,
+         password: uri.password
     end
 
 		configure :development do
