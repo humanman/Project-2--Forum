@@ -10,17 +10,18 @@ require_relative "models/reply"
 module App
 
 	class Server < Sinatra::Base
-		include Forum
-		enable :sessions
 
 		configure :development do
-      register Sinatra::Reloader
+      # register Sinatra::Reloader
       $db = PG.connect
-  		dbname: 'jake_forum',
+  		dbname: "jake_forum",
   		host: "localhost"
     end
+		# configure :development do
+  #     $db = PG.connect dbname: "hogwarts_crud", host: "localhost"
+  #   end
 
-		configure :production do
+    configure :production do
       require 'uri'
       uri = URI.parse ENV["DATABASE_URL"]
       $db = PG.connect dbname: uri.path[1..-1],
@@ -29,6 +30,10 @@ module App
          user: uri.user,
          password: uri.password
     end
+
+		include Forum
+		enable :sessions
+
 
     def current_user 
       session[:user_id]
@@ -146,7 +151,7 @@ module App
 			  	@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 			  	erb :homepage
 			  end
-    end
+      end
 
 # Time.parse 
 
