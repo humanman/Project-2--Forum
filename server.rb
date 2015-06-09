@@ -13,6 +13,13 @@ module App
 		include Forum
 		enable :sessions
 
+		configure :development do
+      register Sinatra::Reloader
+      $db = PG.connect
+  		dbname: 'jake_forum',
+  		host: "localhost"
+    end
+
 		configure :production do
       require 'uri'
       uri = URI.parse ENV["DATABASE_URL"]
@@ -21,13 +28,6 @@ module App
          port: uri.port,
          user: uri.user,
          password: uri.password
-    end
-
-		configure :development do
-      register Sinatra::Reloader
-      $db = PG.connect
-  		dbname: 'jake_forum',
-  		host: "localhost"
     end
 
     def current_user 
