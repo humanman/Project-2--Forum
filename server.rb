@@ -11,28 +11,25 @@ module App
 
 	class Server < Sinatra::Base
 
-		configure :development do
-      # register Sinatra::Reloader
-      $db = PG.connect
-  		dbname: "jake_forum",
-  		host: "localhost"
-    end
-		# configure :development do
-  #     $db = PG.connect dbname: "hogwarts_crud", host: "localhost"
-  #   end
-
-    configure :production do
-      require 'uri'
-      uri = URI.parse ENV["DATABASE_URL"]
-      $db = PG.connect dbname: uri.path[1..-1],
-         host: uri.host,
-         port: uri.port,
-         user: uri.user,
-         password: uri.password
-    end
-
 		include Forum
 		enable :sessions
+
+		
+
+    configure :development do
+    	$db= PG.connect dbname: "jake_forum", host: "localhost"
+    end
+
+
+    configure :production do
+    	require 'uri'
+    	uri = URI.parse ENV["DATABASE_URL"]
+    	$db= PG.connect dbname: uri.path[1..-1],
+    	host: uri.host,
+    	port: uri.port,
+    	user: uri.user,
+    	password: uri.password
+    end
 
 
     def current_user 
