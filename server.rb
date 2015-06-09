@@ -25,9 +25,9 @@ module App
 
 		configure :development do
       register Sinatra::Reloader
-      $db = PG.connect({
-  		dbname: 'jake_forum'
-			}), host: "localhost"
+      $db = PG.connect
+  		dbname: 'jake_forum',
+  		host: "localhost"
     end
 
     def current_user 
