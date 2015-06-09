@@ -10,14 +10,10 @@ require_relative "models/reply"
 module App
 
 	class Server < Sinatra::Base
-
 		include Forum
 		enable :sessions
-
-		
-
     configure :development do
-    	$db= PG.connect dbname: "jake_forum", host: "localhost"
+    	$db= PG.connect dbname: "jake_forum" host: "localhost"
     end
 
 
@@ -58,7 +54,7 @@ module App
     def reply_sorter(id)
     	@all_replies = $db.exec_params("SELECT * FROM replies WHERE comment_id = $1 ORDER BY replies.created_at DESC;",[id]).entries
 			@all_replies.each do |response|
-				return response['message']
+			return response['message']
 			end
 			# binding.pry    
     end
