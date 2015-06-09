@@ -1,15 +1,10 @@
-require "sinatra/base"
-require "sinatra/reloader"
-require "redcarpet"
-require "sendgrid-ruby"
-require "gon"
-require "pry"
 
-require_relative "db/connection"
-require_relative "models/comment"
-require_relative "models/post"
-require_relative "models/user"
-require_relative "models/reply"
+
+# require_relative "db/connection"
+# require_relative "models/comment"
+# require_relative "models/post"
+# require_relative "models/user"
+# require_relative "models/reply"
 
 
 module App
