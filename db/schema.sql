@@ -1,6 +1,6 @@
--- DROP DATABASE IF EXISTS jake_forum;
--- CREATE DATABASE jake_forum;
--- \c jake_forum
+DROP DATABASE IF EXISTS jake_forum;
+CREATE DATABASE jake_forum;
+\c jake_forum
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS posts CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
