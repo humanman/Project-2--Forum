@@ -17,9 +17,22 @@ module App
 	class Server < Sinatra::Base
 		include Forum
 		enable :sessions
+		 configure :production do
+    	require 'uri'
+	    uri = URI.parse ENV["DATABASE_URL"]
+	    $db = PG.connect 
+  	  dbname: uri.path[1..-1],
+      host: uri.host,
+      port: uri.port,
+      user: uri.user,
+      password: uri.password
+    end
 
-		configure do
+		configure :development do
       register Sinatra::Reloader
+      $db = PG.connect({
+  		dbname: 'jake_forum'
+			}), host: "localhost"
     end
 
     def current_user 
@@ -68,7 +81,7 @@ module App
     # end
 
     post('/users/login') do
-
+    	@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
     	@front_page = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
 
       email = params[:email]
@@ -86,7 +99,8 @@ module App
 	      end
     end
 
-    get('/user') do
+    get'/user' do
+    	@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
       user_id = session[:user_id] # retrieve the stored user id
       if user_id
         query = "SELECT * FROM users WHERE id = $1 LIMIT 1"
@@ -100,12 +114,16 @@ module App
     end
 
     get '/users' do
+    	@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+    	@front_page = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
+
 	    # This should get all of the users (READ)
 	    @users = $db.exec_params("SELECT * FROM users;") 
 	    erb :users
     end
 
     post '/users' do
+    	@new_user = User.new(params)
 	    # This should CREATE a new user
 	    ip = request.ip
 	    hash = {
@@ -118,7 +136,9 @@ module App
 	  	}
 	  	@new_user = Forum::User.new(hash)
 	    @is_user = $db.exec_params("SELECT * FROM users WHERE name = $1 AND email = $2",[@new_user.name, @new_user.email])
-	    	if  @is_user.ntuples == 0
+	    # password_check(params[:password1], params[:password2])
+	    	if  @is_user.ntuples == 0  
+	    		# && password_check
 			    result = $db.exec_params("INSERT INTO users (name, email, loc, rating, password, post_num, created_at)
 			      VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP) RETURNING id", [@new_user.name, @new_user.email, @new_user.loc, @new_user.rating, @new_user.password, @new_user.post_num])
 			    @id = result.first["id"] 
@@ -127,6 +147,8 @@ module App
 			    redirect "/users/#{@id}"
 			  else
 			  	@message = "That username/email is already in use"
+			  	@front_page = $db.exec("SELECT * FROM posts ORDER BY upvotes DESC;")
+			  	@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 			  	erb :homepage
 			  end
     end
@@ -134,17 +156,20 @@ module App
 # Time.parse 
 
     get '/users/:id' do
-    	# render markdown of post history
-      @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-      # This should GET a user
-      @id = (params[:id])
-      # add all posts to users/:id
-      @user_profile = $db.exec_params("SELECT * FROM users LEFT JOIN posts ON users.id = posts.user_id WHERE users.id = $1;" ,[@id]).first 
-      @user_posts = $db.exec_params("SELECT * FROM posts LEFT JOIN users on posts.user_id = users.id WHERE users.id = $1;" ,[@id]).entries
-      
+    	if logged_in?
+	    	# render markdown of post history
+	      @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+	      # This should GET a user
+	      @id = (params[:id])
+	      # add all posts to users/:id
+	      @user_profile = $db.exec_params("SELECT * FROM users LEFT JOIN posts ON users.id = posts.user_id WHERE users.id = $1;" ,[@id]).first 
+	      @user_posts = $db.exec_params("SELECT * FROM posts LEFT JOIN users on posts.user_id = users.id WHERE users.id = $1;" ,[@id]).entries
+      	erb :user
+	    else
+	     	redirect '/'
       # binding.pry
+    	end
 
-      erb :user
   	end
 
     patch '/users/:id' do

@@ -1,11 +1,18 @@
 # A sample Gemfile
 source "https://rubygems.org"
+ruby "2.2.0"
 
+gem 'rake'
 gem "sinatra"
-gem "sinatra-contrib"
 gem "pg"
-gem "pry"
+
 gem "redcarpet"
 gem "sendgrid-ruby"
 gem "rest-client"
-gem "gon"
+
+
+group :development do
+  gem 'pry'
+  gem 'sinatra-contrib'
+end
+
