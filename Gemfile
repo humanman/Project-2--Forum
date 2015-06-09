@@ -12,7 +12,7 @@ gem "rest-client"
 
 
 group :development do
-  gem 'pry'
-  gem 'sinatra-contrib'
+ gem 'pry'
+ gem 'sinatra-contrib'
 end
 

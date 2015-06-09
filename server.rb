@@ -1,5 +1,3 @@
-
-
 # require_relative "db/connection"
 require_relative "models/comment"
 require_relative "models/post"
@@ -13,9 +11,8 @@ module App
 		include Forum
 		enable :sessions
     configure :development do
-    	$db= PG.connect dbname: "jake_forum" host: "localhost"
+    	$db= PG.connect dbname: "jake_forum", host: "localhost"
     end
-
 
     configure :production do
     	require 'uri'
